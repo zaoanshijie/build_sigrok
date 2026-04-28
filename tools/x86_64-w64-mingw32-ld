@@ -1,0 +1,89 @@
+#!/bin/sh
+# Wrapper for x86_64-w64-mingw32-ld
+# Handles the -r (relocatable) flag by using ar to create an archive,
+# since LLD doesn't support -r for PE/COFF targets.
+#
+# This is placed in build_sigrok/tools/ and prepended to PATH so it
+# intercepts calls before the toolchain's ld-wrapper.sh.
+
+REAL_LD="${TOOLCHAIN_PATH}/bin/ld-wrapper.sh"
+REAL_AR="${TOOLCHAIN_PATH}/bin/x86_64-w64-mingw32-ar"
+# Check if -r is in arguments
+has_relocatable=false
+for arg in "$@"; do
+    if [ "$arg" = "-r" ]; then
+        has_relocatable=true
+        break
+    fi
+done
+
+if [ "$has_relocatable" = false ]; then
+    exec "$REAL_LD" "$@"
+fi
+
+# Parse output file from -o flag
+output=""
+skip_next=false
+for arg in "$@"; do
+    if [ "$skip_next" = true ]; then
+        output="$arg"
+        skip_next=false
+        continue
+    fi
+    case "$arg" in
+        -r)                    ;;
+        -o) skip_next=true     ;;
+        -o*) output="${arg#-o}" ;;
+        -*)                    ;;
+    esac
+done
+
+if [ -z "$output" ]; then
+    echo "Error: -r flag used but no -o flag found" >&2
+    exit 1
+fi
+
+# Create temp dir in current directory to keep relative paths working
+tmpdir=".ld-wrapper-tmp-$$"
+mkdir -p "$tmpdir"
+trap 'rm -rf "$tmpdir"' EXIT
+
+# Resolve .la files to their actual .a archives, extract .o files
+skip_next=false
+for arg in "$@"; do
+    if [ "$skip_next" = true ]; then
+        skip_next=false
+        continue
+    fi
+    case "$arg" in
+        -r)                    ;;
+        -o)  skip_next=true    ;;
+        -o*)                   ;;
+        -*)                    ;;
+        *.la)
+            dir=$(dirname "$arg")
+            # Read old_library from .la file
+            old_lib=$(grep "^old_library=" "$arg" 2>/dev/null | sed "s/^old_library='//; s/'$//")
+            if [ -n "$old_lib" ]; then
+                archive_path="$dir/.libs/$old_lib"
+                if [ -f "$archive_path" ]; then
+                    cp "$archive_path" "$tmpdir/" && \
+                    (cd "$tmpdir" && "$REAL_AR" x "$old_lib" && rm -f "$old_lib")
+                fi
+            fi
+            ;;
+        *.a)
+            cp "$arg" "$tmpdir/" && \
+            (cd "$tmpdir" && "$REAL_AR" x "$(basename "$arg")" && rm -f "$(basename "$arg")")
+            ;;
+        *.o)
+            cp "$arg" "$tmpdir/" 2>/dev/null || true
+            ;;
+    esac
+done
+
+# Create archive output using ar
+# .o extension works because LLD/GCC handle archives transparently
+"$REAL_AR" crs "$output" "$tmpdir"/*.o 2>/dev/null
+
+exit 0
