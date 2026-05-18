@@ -4,6 +4,13 @@ script_dir=$(
     cd "$(dirname "${BASH_SOURCE[0]:-$0}")" && pwd
 )
 
+build_script=""
+if [ -n "$1" ]; then
+  build_script="$1"
+else
+  echo "错误：输入脚本不存在"
+  exit 1
+fi
 
 if [[ "$GITHUB_ACTIONS" != "true" ]]; then
   mingw_path="/mnt/data/env/llvm-mingw"
@@ -41,16 +48,4 @@ rm -rf ${PREFIX}
 mkdir -p ${PREFIX}/include
 mkdir -p ${PREFIX}/lib
 
-# export HTTP_PROXY=http://192.168.15.103:10809
-bash ${script_dir}/download_libusb.sh
-bash ${script_dir}/convert_python.sh
-bash ${script_dir}/build_glib.sh
-bash ${script_dir}/build_glibmm.sh
-bash ${script_dir}/build_libzip.sh
-bash ${script_dir}/build_libserialport.sh
-bash ${script_dir}/build_libsigrok.sh
-bash ${script_dir}/build_libsigrokdecode.sh
-
-# 复制依赖
-cp ${TOOLCHAIN_PATH}/${TOOLCHAIN_PREFIX}/bin/libunwind.dll ${PREFIX}/bin/
-cp ${TOOLCHAIN_PATH}/${TOOLCHAIN_PREFIX}/bin/libc++.dll ${PREFIX}/bin/
+bash "${script_dir}/${build_script}"

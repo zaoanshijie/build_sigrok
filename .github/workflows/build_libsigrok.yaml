@@ -1,7 +1,6 @@
 name: 编译libsigrok
 run-name: ${{ github.actor }}
-on:
-  [push]
+on: [push]
 
 env:
   HTTP_PROXY: ""
@@ -24,7 +23,7 @@ jobs:
           echo "TOOLCHAIN_PREFIX=${TOOLCHAIN_PREFIX}" >> $GITHUB_ENV
           echo "TARGET=${TARGET}" >> $GITHUB_ENV
           echo "PATH=${PATH}" >> $GITHUB_ENV
-          
+
           echo "TOOLCHAIN_PATH=${TOOLCHAIN_PATH}"
           echo "BUILD_DIR=${BUILD_DIR}"
           echo "PREFIX=${PREFIX}"
@@ -37,7 +36,7 @@ jobs:
         run: |
           cd $GITHUB_WORKSPACE
           set -o pipefail
-          bash $GITHUB_WORKSPACE/corss_build.sh 2>&1 | tee build_log.txt
+          bash $GITHUB_WORKSPACE/corss_build.sh build_libsigrok.sh 2>&1 | tee build_log.txt
         continue-on-error: true
 
       - name: 打包libsigrok
@@ -45,7 +44,7 @@ jobs:
         run: |
           cd $GITHUB_WORKSPACE
           zip -r $GITHUB_WORKSPACE/libsigrok-${{ github.sha }}.zip $PREFIX
-          
+
       - name: 上传libsigrok
         if: steps.build.outcome == 'success'
         uses: actions/upload-artifact@v4
