@@ -20,8 +20,8 @@ git checkout ${lib_version}
 ./autogen.sh
 # Override LD to use the wrapper that handles -r (relocatable) flag
 # since LLD for PE/COFF targets does not support -r
-# export LD=${script_dir}/tools/x86_64-w64-mingw32-ld
-./configure ${BUILD_CONFIG} LD="${script_dir}/tools/x86_64-w64-mingw32-ld"
+# export LD=${TOOLS}/x86_64-w64-mingw32-ld
+./configure ${BUILD_CONFIG} LD="${TOOLS}/x86_64-w64-mingw32-ld"
 # Fix libtool: replace MSVC-style 'lib -OUT:' with POSIX 'ar cr' for static archiving
 # LLVM-mingw uses ar, not lib.exe
 sed -i '/old_archive_cmds="lib -OUT/c old_archive_cmds="\$AR \$AR_FLAGS \\\$oldlib\\\$oldobjs\\\$old_deplibs"' libtool

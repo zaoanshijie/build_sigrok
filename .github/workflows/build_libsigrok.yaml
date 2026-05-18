@@ -23,6 +23,7 @@ jobs:
           echo "TOOLCHAIN_PREFIX=${TOOLCHAIN_PREFIX}" >> $GITHUB_ENV
           echo "TARGET=${TARGET}" >> $GITHUB_ENV
           echo "PATH=${PATH}" >> $GITHUB_ENV
+          echo "TOOLS=${TOOLS}" >> $GITHUB_ENV
 
           echo "TOOLCHAIN_PATH=${TOOLCHAIN_PATH}"
           echo "BUILD_DIR=${BUILD_DIR}"
@@ -30,6 +31,7 @@ jobs:
           echo "TOOLCHAIN_PREFIX=${TOOLCHAIN_PREFIX}"
           echo "TARGET=${TARGET}"
           echo "PATH=${PATH}"
+          echo "TOOLS=${TOOLS}"
 
       - name: 编译
         id: build

@@ -15,7 +15,8 @@ export BUILD_DIR=${build_dir}
 export PREFIX=${prefix}
 export TOOLCHAIN_PREFIX=${toolchain_triplet}
 export TARGET="${target}"
-export PATH=${script_dir}/tools:${mingw_path}/bin:${PATH}
+export TOOLS="${script_dir}/tools"
+export PATH=${TOOLS}:${mingw_path}/bin:${PATH}
 
 if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
 
