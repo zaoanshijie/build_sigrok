@@ -42,8 +42,8 @@ jobs:
       - name: 打包pkg_config
         if: steps.build.outcome == 'success'
         run: |
-          cd $GITHUB_WORKSPACE
-          zip -r $GITHUB_WORKSPACE/pkg_config-${{ github.sha }}.zip $PREFIX
+          cd $PREFIX
+          zip -r $GITHUB_WORKSPACE/pkg_config-${{ github.sha }}.zip .
 
       - name: 上传pkg_config
         if: steps.build.outcome == 'success'

@@ -42,8 +42,8 @@ jobs:
       - name: 打包libsigrok
         if: steps.build.outcome == 'success'
         run: |
-          cd $GITHUB_WORKSPACE
-          zip -r $GITHUB_WORKSPACE/libsigrok-${{ github.sha }}.zip $PREFIX
+          cd $PREFIX
+          zip -r $GITHUB_WORKSPACE/libsigrok-${{ github.sha }}.zip .
 
       - name: 上传libsigrok
         if: steps.build.outcome == 'success'
