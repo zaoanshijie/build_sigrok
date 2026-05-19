@@ -16,10 +16,10 @@ fi
 if [ ! -d  "${PREFIX}/bin" ]; then
   mkdir -p ${PREFIX}/bin
 fi
-python_dir="${script_dir}/python/python${python_version}"
+python_dir="${PROJECT_DIR}/python/python${python_version}"
 cp -r ${python_dir}/include/* ${PREFIX}/include
-patch -p1 ${PREFIX}/include/pyconfig.h < ${script_dir}/python/pyconfig.patch
-# patch -p1 ${script_dir}/python/python312/include/pyconfig.h < ${script_dir}/python/pyconfig.patch
+patch -p1 ${PREFIX}/include/pyconfig.h < ${PROJECT_DIR}/python/pyconfig.patch
+# patch -p1 ${PROJECT_DIR}/python/python312/include/pyconfig.h < ${PROJECT_DIR}/python/pyconfig.patch
 
 
 cat >${PREFIX}/lib/pkgconfig/python3.pc <<EOF 
