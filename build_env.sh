@@ -17,7 +17,7 @@ export TOOLCHAIN_PREFIX=${toolchain_triplet}
 export TARGET="${target}"
 export PROJECT_DIR="${script_dir}"
 export PATH=${PROJECT_DIR}/tools:${mingw_path}/bin:${PATH}
-export PYTHON=python3.13  # 指定python版本
+export PYTHON=python3.12  # 指定python版本
 
 if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
 

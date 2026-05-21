@@ -42,13 +42,13 @@ includedir=\${prefix}/include
 Name: Python
 Description: Python library
 Version: ${python_point_version}
-Libs: \${libdir}/libpython${python_version}.a
+Libs: -L\${libdir} -lpython${python_version}
 Cflags: -I\${includedir}
 EOF
 
 cp ${python_dir}/bin/*.dll ${PREFIX}/bin
 cd ${PREFIX}/bin
 gendef python${python_version}.dll
-llvm-dlltool -D python${python_version}.dll -d python${python_version}.def -l libpython${python_version}.a
-mv -f libpython${python_version}.a ${PREFIX}/lib/
+llvm-dlltool -D python${python_version}.dll -d python${python_version}.def -l libpython${python_version}.dll.a
+mv -f libpython${python_version}.dll.a ${PREFIX}/lib/
 mv -f python${python_version}.def ${PREFIX}/lib/
