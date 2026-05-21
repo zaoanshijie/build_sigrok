@@ -43,6 +43,7 @@ Name: Python
 Description: Python library
 Version: ${python_point_version}
 Libs: -L\${libdir} -lpython${python_version}
+Libs.private: -lm
 Cflags: -I\${includedir}
 EOF
 

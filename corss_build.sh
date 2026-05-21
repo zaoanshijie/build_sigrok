@@ -35,7 +35,7 @@ echo "TARGET=${TARGET}"
 echo "PATH=${PATH}"
 
 # 预处理参数
-build_config="--host=${TOOLCHAIN_PREFIX} --prefix=${PREFIX} --enable-shared --disable-static CPPFLAGS=-D__printf__=__gnu_printf__ CC=${TOOLCHAIN_PREFIX}-gcc CXX=${TOOLCHAIN_PREFIX}-g++  AR=${TOOLCHAIN_PREFIX}-ar  WINDRES=${TOOLCHAIN_PREFIX}-windres"
+build_config="--host=${TOOLCHAIN_PREFIX} --prefix=${PREFIX} CPPFLAGS=-D__printf__=__gnu_printf__ CC=${TOOLCHAIN_PREFIX}-gcc CXX=${TOOLCHAIN_PREFIX}-g++  AR=${TOOLCHAIN_PREFIX}-ar  WINDRES=${TOOLCHAIN_PREFIX}-windres"
 export BUILD_CONFIG=${build_config}
 # 这个是pkgconfig查找路径
 export PKG_CONFIG_LIBDIR=${PREFIX}/lib/pkgconfig:${PREFIX}/share/pkgconfig # 替换默认搜索路径
@@ -49,4 +49,6 @@ mkdir -p ${PREFIX}/include
 mkdir -p ${PREFIX}/lib
 mkdir -p ${PREFIX}/bin
 
+source ${script_dir}/miniconda3/bin/activate
+conda activate myenv
 bash "${script_dir}/${build_script}"

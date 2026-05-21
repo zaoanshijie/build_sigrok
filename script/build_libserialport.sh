@@ -18,6 +18,6 @@ cd ${src_dir}
 git checkout ${lib_version}
 
 ./autogen.sh
-./configure ${BUILD_CONFIG}
+./configure --enable-shared --disable-static ${BUILD_CONFIG}
 make -j
 make install

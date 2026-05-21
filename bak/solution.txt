@@ -1,0 +1,49 @@
+# 错误原因与解决方案
+
+## 错误1: `lld: error: unable to find library -link`
+
+**根因**: libtool 的 `archive_cmds` (用于创建共享库/DLL) 包含了 MSVC 风格的 `-link -dll~linknames=` 标志。
+LLD (llvm-mingw 使用的链接器) 不理解 MSVC 的 `-link` 标志,将其误认为是库名 `-llink`,导致链接失败。
+
+**解决方案**: 将 libtool 中 MSVC 风格的 `archive_cmds` 替换为 POSIX 风格 (`-shared`)。
+
+## 错误2: `lld: error: undefined symbol: sr_init, sr_exit, ...` (CXX bindings)
+
+**根因**: `libsigrok-4.dll` 虽然编译成功了,但它的导出表(Export Table)是空的。
+原因是 LLD 22.1.4 的 `--export-all-symbols` 标志对 COFF/PE 目标**不起作用**。
+所有 `sr_*` 函数虽然存在于 DLL 符号表中,但未出现在导出表中,
+其他 DLL(如 libsigrokcxx)无法链接这些符号。
+
+**解决方案**: 修改 `archive_cmds`,在链接 DLL 之前:
+1. 使用 `nm` 从对象文件中提取所有 `T/D/R/B` 符号
+2. 生成 `.def` 文件(MSVC 导出定义文件),包含 `EXPORTS` 和符号列表
+3. 将 `.def` 文件作为额外输入传递给编译器驱动,LLD 会正确处理它
+
+## 错误3: `lld: error: undefined symbol: ___chkstk_ms` (CXX bindings)
+
+**根因**: CXX 标签的 `archive_cmds` 使用了 `-nostdlib` 标志,阻止了 clang 运行时库
+(`libclang_rt.builtins-x86_64.a`) 的自动链接。`___chkstk_ms` 符号位于该运行时库中。
+
+**解决方案**: 从 CXX 的 `archive_cmds` 中移除 `-nostdlib` 标志。
+
+## 错误4: `install: cannot stat '.libs/libsigrok-4.dll'`
+
+**根因**: LLD 输出一个名为 `libsigrok.dll.a` 的文件(既是 DLL 又是导入库),
+但 libtool 期望一个名为 `libsigrok-4.dll` 的带版本号的 DLL 文件用于安装。
+
+**解决方案**: 在 `archive_cmds` 中,链接完成后将输出文件复制到带版本号的名称,
+例如 `cp $lib $(dirname $lib)/$soname`。
+
+## 错误5: `install: cannot stat '.libs/libsigrok.a'`
+
+**根因**: libtool 的 `.la` 文件包含 `old_library='libsigrok.a'` 引用,
+即使使用了 `--disable-static`,安装过程仍会尝试安装该文件。
+
+**解决方案**: 安装前清除 `.la` 文件中的 `old_library` 引用。
+
+## 修改的文件
+
+1. `build_libsigrok.sh` - 主要编译脚本,包含所有 libtool 修复
+2. `tools/gen_exports.sh` - 从对象文件生成 .def 导出文件的辅助脚本
+3. `tools/fix_libtool_archives.sh` - 修复 C 和 CXX 标签的 archive_cmds 的辅助脚本
+4. `x86_64-w64-mingw32-ld` - LD 包装器(已存在,新增 DLL 导出处理逻辑)

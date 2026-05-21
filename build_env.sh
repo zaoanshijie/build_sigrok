@@ -9,6 +9,7 @@ build_dir="${script_dir}/.build"
 prefix="${script_dir}/out"
 target="x86_64"
 toolchain_triplet="${target}-w64-mingw32"
+python_version=3.13 # 指定python版本
 
 export TOOLCHAIN_PATH=${mingw_path}
 export BUILD_DIR=${build_dir}
@@ -16,8 +17,8 @@ export PREFIX=${prefix}
 export TOOLCHAIN_PREFIX=${toolchain_triplet}
 export TARGET="${target}"
 export PROJECT_DIR="${script_dir}"
-export PATH=${PROJECT_DIR}/tools:${mingw_path}/bin:${PATH}
-export PYTHON=python3.12  # 指定python版本
+export PATH=${PROJECT_DIR}/tools:${mingw_path}/bin:${script_dir}/miniconda3/bin:${PATH}
+export PYTHON=python${python_version}  
 
 if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
 
@@ -26,7 +27,7 @@ apt update
 # apt dist-upgrade -y
 apt install git ninja-build curl p7zip-full graphviz libxml-parser-perl docbook-xsl doxygen xsltproc -y
 
-python3 -m pip install meson
+# python3 -m pip install meson
 # python3 -m pip install PyGObject
 
 # 设置 LLVM MinGW 版本和下载 URL

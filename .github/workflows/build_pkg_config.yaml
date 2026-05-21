@@ -15,6 +15,7 @@ jobs:
       - name: 环境准备
         run: |
           cd $GITHUB_WORKSPACE
+          bash $GITHUB_WORKSPACE/install_miniconda.sh
           sudo bash $GITHUB_WORKSPACE/build_env.sh
           source $GITHUB_WORKSPACE/build_env.sh
           echo "TOOLCHAIN_PATH=${TOOLCHAIN_PATH}" >> $GITHUB_ENV
@@ -25,15 +26,6 @@ jobs:
           echo "PATH=${PATH}" >> $GITHUB_ENV
           echo "PROJECT_DIR=${PROJECT_DIR}" >> $GITHUB_ENV
           echo "PYTHON=${PYTHON}" >> $GITHUB_ENV
-
-          echo "TOOLCHAIN_PATH=${TOOLCHAIN_PATH}"
-          echo "BUILD_DIR=${BUILD_DIR}"
-          echo "PREFIX=${PREFIX}"
-          echo "TOOLCHAIN_PREFIX=${TOOLCHAIN_PREFIX}"
-          echo "TARGET=${TARGET}"
-          echo "PATH=${PATH}"
-          echo "PROJECT_DIR=${PROJECT_DIR}"
-          echo "PYTHON=${PYTHON}"
 
       - name: 编译
         id: build

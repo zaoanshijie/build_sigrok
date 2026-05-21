@@ -20,7 +20,7 @@ install_file=$(curl -fsSL "https://api.github.com/repos/libusb/${lib_name}/relea
 file_name=$(echo ${install_file} | awk -F "/" '{print $NF}')
 # \丢弃前面匹配的 "download/v"
 # [^/]匹配一个或多个非 / 的字符
-lib_version=$(echo "${install_file}" | grep -oP 'download/\K[^/]+')
+lib_version=$(echo "${install_file}" | grep -oP 'download/v\K[^/]+')
 echo "${lib_name} 版本 ${lib_version}"
 
 curl_proxy=
