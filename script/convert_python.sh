@@ -6,6 +6,18 @@ script_dir=$(
 
 python_version="310"
 python_point_version="3.10"
+
+if [[ "${PYTHON}" == "python3.13" ]]; then
+  python_version="313"
+  python_point_version="3.13"
+fi
+
+if [[ "${PYTHON}" == "python3.12" ]]; then
+  python_version="312"
+  python_point_version="3.12"
+fi
+echo "使用${PYTHON}"
+
 # 处理python环境
 if [ ! -d  "${PREFIX}/include" ]; then
   mkdir -p ${PREFIX}/include

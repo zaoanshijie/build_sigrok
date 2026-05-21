@@ -24,6 +24,7 @@ jobs:
           echo "TARGET=${TARGET}" >> $GITHUB_ENV
           echo "PATH=${PATH}" >> $GITHUB_ENV
           echo "PROJECT_DIR=${PROJECT_DIR}" >> $GITHUB_ENV
+          echo "PYTHON=${PYTHON}" >> $GITHUB_ENV
 
           echo "TOOLCHAIN_PATH=${TOOLCHAIN_PATH}"
           echo "BUILD_DIR=${BUILD_DIR}"
@@ -32,6 +33,7 @@ jobs:
           echo "TARGET=${TARGET}"
           echo "PATH=${PATH}"
           echo "PROJECT_DIR=${PROJECT_DIR}"
+          echo "PYTHON=${PYTHON}"
 
       - name: 编译
         id: build

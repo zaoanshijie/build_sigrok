@@ -35,7 +35,7 @@ echo "TARGET=${TARGET}"
 echo "PATH=${PATH}"
 
 # 预处理参数
-build_config="--host=${TOOLCHAIN_PREFIX} --prefix=${PREFIX} --disable-shared --enable-static CPPFLAGS=-D__printf__=__gnu_printf__"
+build_config="--host=${TOOLCHAIN_PREFIX} --prefix=${PREFIX} --enable-shared --disable-static CPPFLAGS=-D__printf__=__gnu_printf__"
 export BUILD_CONFIG=${build_config}
 # 这个是pkgconfig查找路径
 export PKG_CONFIG_LIBDIR=${PREFIX}/lib/pkgconfig:${PREFIX}/share/pkgconfig # 替换默认搜索路径
