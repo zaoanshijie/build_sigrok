@@ -47,6 +47,6 @@ includedir=\${prefix}/include
 Name: libusb-1.0
 Description: libusb-1.0 library
 Version: ${lib_version}
-Libs: -L \${libdir} -lusb-1.0
+Libs: -L\${libdir} -lusb-1.0
 Cflags: -I\${includedir}
 EOF

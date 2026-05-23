@@ -16,13 +16,13 @@ git clone  https://github.com/sigrokproject/${lib_name}.git
 
 cd ${src_dir}
 git checkout ${lib_version}
-
+   
 # unset PYTHON
 ./autogen.sh
 # Override LD to use the wrapper that handles -r (relocatable) flag
 # since LLD for PE/COFF targets does not support -r
 # export LD=${PROJECT_DIR}/tools/x86_64-w64-mingw32-ld
-./configure --disable-shared --enable-static ${BUILD_CONFIG} LD="${PROJECT_DIR}/tools/x86_64-w64-mingw32-ld"
+./configure --disable-shared --enable-static --enable-cxx --disable-python --disable-ruby --disable-java ${BUILD_CONFIG} LD="${PROJECT_DIR}/tools/x86_64-w64-mingw32-ld"
 # Fix libtool: replace MSVC-style 'lib -OUT:' with POSIX 'ar cr' for static archiving
 # LLVM-mingw uses ar, not lib.exe
 sed -i '/old_archive_cmds="lib -OUT/c old_archive_cmds="\$AR \$AR_FLAGS \\\$oldlib\\\$oldobjs\\\$old_deplibs"' libtool
