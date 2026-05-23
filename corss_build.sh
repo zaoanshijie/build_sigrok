@@ -12,6 +12,15 @@ else
   exit 1
 fi
 
+build_script="${script_dir}/${build_script}.sh"
+if [[ ! -f ${build_script} ]]; then
+  echo "错误：编译脚本不存在:${build_script}"
+  exit 1
+fi
+
+echo "编译脚本路径:${build_script}"
+
+
 if [[ "$GITHUB_ACTIONS" != "true" ]]; then
   mingw_path="/mnt/data/env/llvm-mingw"
   build_dir="${script_dir}/.build"
@@ -42,6 +51,7 @@ export PKG_CONFIG_LIBDIR=${PREFIX}/lib/pkgconfig:${PREFIX}/share/pkgconfig # 替
 export PKG_CONFIG_PATH="${PREFIX}/lib/pkgconfig:${PREFIX}/share/pkgconfig"
 export PKG_CONFIG_PATH_x86_64_w64_mingw32="${PREFIX}/lib/pkgconfig:${PREFIX}/share/pkgconfig"
 
+echo "输出目录重建"
 rm -rf ${BUILD_DIR}
 mkdir ${BUILD_DIR}
 rm -rf ${PREFIX}
@@ -49,6 +59,10 @@ mkdir -p ${PREFIX}/include
 mkdir -p ${PREFIX}/lib
 mkdir -p ${PREFIX}/bin
 
+echo "初始化miniconda"
+shift $#
 source ${script_dir}/miniconda3/bin/activate
 conda activate myenv
-bash "${script_dir}/${build_script}"
+
+echo "开始编译"
+bash ${build_script}
