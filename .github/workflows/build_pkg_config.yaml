@@ -1,6 +1,8 @@
 name: 编译pkg-config
 run-name: ${{ github.actor }}
-on: [push]
+on:
+  push:
+  workflow_dispatch:
 
 env:
   HTTP_PROXY: ""
